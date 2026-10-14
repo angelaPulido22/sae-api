@@ -1,0 +1,571 @@
+{
+  "info": {
+    "name": "SAE API",
+    "description": "Sistema de Atención al Estudiante. 1) Ejecuta Auth > Login (guarda el token solo). 2) Prueba el resto.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Encargada)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"sofia.beltran@uni.edu.co\",\n  \"password\": \"Sae2026*\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "if (d.token) { pm.collectionVariables.set('token', d.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (Administrador)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"roberto.salcedo@uni.edu.co\",\n  \"password\": \"Sae2026*\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "if (d.token) { pm.collectionVariables.set('token', d.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi sesión",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estudiante (público)",
+      "item": [
+        {
+          "name": "HU-01/02/15 Radicar solicitud",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes"
+              ]
+            },
+            "description": "Envía el correo de confirmación (en modo simulado el enlace sale en la consola del servidor).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo_estudiante\": \"20231001\",\n  \"tipo_caso\": \"Suficiencia\",\n  \"motivo\": \"Ya domina el contenido del curso\",\n  \"descripcion\": \"Solicita examen de suficiencia de Redes\",\n  \"documentos_adjuntos\": [\n    \"notas.pdf\"\n  ]\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "HU-02 Reenviar correo de confirmación",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/S005/reenviar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "S005",
+                "reenviar"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "HU-03/04 Confirmar solicitud (enlace del correo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/confirmar/PEGA_AQUI_EL_TOKEN",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "confirmar",
+                "PEGA_AQUI_EL_TOKEN"
+              ]
+            },
+            "description": "Pega el token del enlace que sale en la consola.",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Consultar solicitudes de un estudiante",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/solicitudes/estudiante/20201003",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "solicitudes",
+                "estudiante",
+                "20201003"
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Encargada",
+      "item": [
+        {
+          "name": "HU-06 Mis casos (con filtros)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos?prioridad=Alta&estado_actual=En proceso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos"
+              ],
+              "query": [
+                {
+                  "key": "prioridad",
+                  "value": "Alta"
+                },
+                {
+                  "key": "estado_actual",
+                  "value": "En proceso"
+                }
+              ]
+            },
+            "description": "Los filtros son opcionales: tipo_caso, prioridad, estado_actual."
+          }
+        },
+        {
+          "name": "HU-11 Historial de un estudiante",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/estudiante/20201003",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "estudiante",
+                "20201003"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Detalle de un caso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/C006",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "C006"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Crear caso presencial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo_estudiante\": \"20221002\",\n  \"tipo_caso\": \"Homologación\",\n  \"motivo\": \"Materia cursada en otra institución\",\n  \"descripcion\": \"Solicita homologar Álgebra Lineal\",\n  \"prioridad\": \"Media\",\n  \"documentos_adjuntos\": [\n    \"certificado.pdf\"\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "HU-07 Agregar observación",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/C006/observaciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "C006",
+                "observaciones"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"texto\": \"Se recibió el aval del director\"\n}"
+            }
+          }
+        },
+        {
+          "name": "HU-08 Adjuntar documento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/C006/documentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "C006",
+                "documentos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_archivo\": \"acta_sustentacion.pdf\"\n}"
+            }
+          }
+        },
+        {
+          "name": "HU-09 Cambiar estado",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/C006/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "C006",
+                "estado"
+              ]
+            },
+            "description": "Estados: Pendiente, En proceso, Resuelta.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"Resuelta\"\n}"
+            }
+          }
+        },
+        {
+          "name": "HU-05/10 Enviar observación al estudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/casos/C006/observaciones/0/enviar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "casos",
+                "C006",
+                "observaciones",
+                "0",
+                "enviar"
+              ]
+            },
+            "description": "El número 0 es la posición de la observación dentro del caso.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administrador",
+      "item": [
+        {
+          "name": "HU-12 Carga por encargada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/carga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "carga"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "HU-12 Reasignar caso",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/casos/C001/asignar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "casos",
+                "C001",
+                "asignar"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"encargada_id\": \"E004\"\n}"
+            }
+          }
+        },
+        {
+          "name": "HU-13 Panel de pendientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/panel-pendientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "panel-pendientes"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "HU-14 Reporte de expiradas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reporte-expiradas?desde=2026-08-01&hasta=2026-10-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reporte-expiradas"
+              ],
+              "query": [
+                {
+                  "key": "desde",
+                  "value": "2026-08-01"
+                },
+                {
+                  "key": "hasta",
+                  "value": "2026-10-31"
+                }
+              ]
+            },
+            "description": "Filtros opcionales: desde, hasta, tipo_caso."
+          }
+        }
+      ]
+    }
+  ]
+}
